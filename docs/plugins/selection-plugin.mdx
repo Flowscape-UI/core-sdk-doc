@@ -1,0 +1,17 @@
+---
+sidebar_position: 5
+---
+
+# Selection Plugin
+
+Enables mouse selection of nodes, showing selection bounds.
+
+## Usage
+
+```ts
+import { SelectionPlugin } from "@flowscape-ui/core-sdk";
+
+const engine = new CoreEngine({ container, plugins: [new SelectionPlugin()] });
+```
+
+You can combine with `AreaSelectionPlugin` for drag-to-select behavior.

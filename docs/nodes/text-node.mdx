@@ -1,0 +1,22 @@
+---
+sidebar_position: 4
+---
+
+# TextNode
+
+Renders editable text with font options.
+
+## Example
+
+```ts
+const text = engine.nodes.addText({
+  x: 400,
+  y: 320,
+  text: 'Flowscape',
+  fontSize: 28,
+  fontFamily: 'Arial',
+  fill: '#fff',
+});
+
+text.getNode().draggable(true);
+```

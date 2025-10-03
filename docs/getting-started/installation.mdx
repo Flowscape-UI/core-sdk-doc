@@ -1,0 +1,107 @@
+---
+sidebar_position: 1
+---
+
+# Installation
+
+Get started with Flowscape Core SDK in your project.
+
+## Prerequisites
+
+Before installing, make sure you have:
+
+- **Node.js** version 20.0 or higher
+- **npm**, **yarn**, **pnpm**, or **bun** package manager
+
+## Installation
+
+Install the package using your preferred package manager:
+
+```bash npm2yarn
+npm install @flowscape-ui/core-sdk
+```
+
+## Peer Dependencies
+
+Flowscape Core SDK has the following peer dependencies that will be automatically installed:
+
+- **konva** - The underlying canvas library (v9.3.16 or higher)
+
+## Verify Installation
+
+Create a simple test file to verify the installation:
+
+```typescript title="test.ts"
+import { CoreEngine } from "@flowscape-ui/core-sdk";
+
+console.log("Flowscape Core SDK loaded successfully!");
+```
+
+## TypeScript Configuration
+
+If you're using TypeScript, make sure your `tsconfig.json` includes:
+
+```json title="tsconfig.json"
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": true
+  }
+}
+```
+
+## Build Tool Configuration
+
+### Vite
+
+Flowscape Core SDK works out of the box with Vite. No additional configuration needed.
+
+```typescript title="vite.config.ts"
+import { defineConfig } from "vite";
+
+export default defineConfig({
+  // Your Vite config
+});
+```
+
+### Webpack
+
+For Webpack, ensure you have the appropriate loaders for TypeScript:
+
+```bash npm2yarn
+npm install --save-dev ts-loader
+```
+
+### Next.js
+
+For Next.js projects, you may need to transpile the package:
+
+```javascript title="next.config.js"
+const nextConfig = {
+  transpilePackages: ["@flowscape-ui/core-sdk"],
+};
+
+module.exports = nextConfig;
+```
+
+## CDN Usage
+
+You can also use Flowscape Core SDK via CDN (not recommended for production):
+
+```html
+<script type="module">
+  import { CoreEngine } from "https://esm.sh/@flowscape-ui/core-sdk";
+
+  // Your code here
+</script>
+```
+
+## What's Next?
+
+Now that you have installed Flowscape Core SDK, let's create your first canvas application!
+
+👉 [Quick Start Guide](/docs/getting-started/quick-start)

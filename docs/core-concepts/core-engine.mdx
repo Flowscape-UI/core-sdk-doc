@@ -1,0 +1,34 @@
+---
+sidebar_position: 2
+---
+
+# CoreEngine
+
+`CoreEngine` is the entry point of the SDK. It creates the Konva stage, wires managers, and hosts plugins.
+
+## Usage
+
+```ts
+import { CoreEngine } from '@flowscape-ui/core-sdk';
+
+const engine = new CoreEngine({
+  container: document.getElementById('canvas-container') as HTMLDivElement,
+  width: 1200,
+  height: 800,
+  autoResize: true,
+  backgroundColor: '#1e1e1e',
+});
+```
+
+## Public API
+
+- `stage` — access the underlying Konva `Stage`
+- `nodes` — `NodeManager`
+- `camera` — `CameraManager`
+- `virtualization` — `VirtualizationManager`
+- `plugins` — `Plugins` registry
+- `eventBus` — typed event bus
+
+## Grid Layer
+
+The engine creates a dedicated grid `Layer` that is not affected by camera transforms. Plugins like `GridPlugin` can use this to draw UI helpers.

@@ -1,0 +1,44 @@
+---
+sidebar_position: 1
+---
+
+# Plugins Overview
+
+Plugins extend the engine with optional features. A plugin is a class that extends `Plugin` and implements `onAttach` and `onDetach`.
+
+## Using Plugins
+
+```ts
+import { GridPlugin, SelectionPlugin, Plugins } from '@flowscape-ui/core-sdk';
+
+const engine = new CoreEngine({
+  container,
+  plugins: [
+    new GridPlugin(),
+    new SelectionPlugin(),
+  ],
+});
+```
+
+## Built-in Plugins
+
+- Grid
+- Selection / Area Selection
+- Rulers, Guides, Highlight
+- Hotkeys (camera, nodes)
+- Logo
+
+## Writing a Plugin
+
+```ts
+import { Plugin } from '@flowscape-ui/core-sdk';
+
+class MyPlugin extends Plugin {
+  protected onAttach(core) {
+    // subscribe, draw, etc.
+  }
+  protected onDetach(core) {
+    // cleanup
+  }
+}
+```

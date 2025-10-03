@@ -1,0 +1,62 @@
+---
+sidebar_position: 3
+---
+
+# Configuration
+
+Configure the `CoreEngine` to match your app's needs.
+
+## CoreEngine Options
+
+```ts title="CoreEngineOptions"
+interface CoreEngineOptions {
+  container: HTMLDivElement;
+  width?: number;            // Default: container width
+  height?: number;           // Default: container height
+  autoResize?: boolean;      // Default: true
+  backgroundColor?: string;  // Default: '#1e1e1e'
+  draggable?: boolean;       // Stage dragging via camera (default false)
+  plugins?: Plugin[];        // List of plugins to attach
+  minScale?: number;         // Default: 0.1
+  maxScale?: number;         // Default: 500
+  virtualization?: {
+    enabled?: boolean;       // Enable virtualization (default off)
+    bufferZone?: number;     // Offscreen buffer in px
+    throttleMs?: number;     // Throttle for virtualization updates
+  };
+}
+```
+
+## Example
+
+```ts
+import { CoreEngine } from '@flowscape-ui/core-sdk';
+
+const engine = new CoreEngine({
+  container: document.getElementById('canvas-container') as HTMLDivElement,
+  autoResize: true,
+  backgroundColor: '#0b1020',
+  minScale: 0.25,
+  maxScale: 8,
+  virtualization: {
+    enabled: true,
+    bufferZone: 400,
+    throttleMs: 16,
+  },
+});
+```
+
+## Resizing Behavior
+
+- If `autoResize` is `true`, the stage follows the container size.
+- If `false`, the stage uses fixed `width` and `height` and the container gets inline styles.
+
+## Styling the Container
+
+```css
+#canvas-container {
+  width: 100%;
+  height: 100%;
+  background: #1e1e1e; /* Or any color */
+}
+```

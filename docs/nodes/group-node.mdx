@@ -1,0 +1,20 @@
+---
+sidebar_position: 7
+---
+
+# GroupNode
+
+Group nodes together to transform them as a single unit.
+
+## Example
+
+```ts
+const group = engine.nodes.addGroup({ x: 100, y: 100 });
+const g = group.getNode();
+
+const c = engine.nodes.addCircle({ x: 0, y: 0, radius: 40, fill: '#22c55e' });
+const t = engine.nodes.addText({ x: 60, y: -10, text: 'Group', fontSize: 20, fill: '#fff' });
+
+g.add(c.getNode());
+g.add(t.getNode());
+```

@@ -1,0 +1,23 @@
+---
+sidebar_position: 2
+---
+
+# BaseNode
+
+`BaseNode<T>` is the common wrapper around a Konva node.
+
+## API
+
+```ts
+node.getNode();
+node.setPosition({ x: 100, y: 200 });
+node.getPosition();
+node.remove();
+```
+
+## Example
+
+```ts
+const text = engine.nodes.addText({ x: 100, y: 100, text: 'Hello' });
+text.getNode().draggable(true);
+```

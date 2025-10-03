@@ -1,0 +1,20 @@
+---
+sidebar_position: 1
+---
+
+# Transformations
+
+Move, scale, and rotate nodes using Konva APIs via `getNode()`.
+
+```ts
+const rect = engine.nodes.addShape({
+  x: 200,
+  y: 200,
+  width: 120,
+  height: 80,
+  fill: "#22c55e",
+});
+const k = rect.getNode();
+k.scale({ x: 1.5, y: 1.5 });
+k.rotation(30);
+```

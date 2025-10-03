@@ -1,0 +1,28 @@
+---
+sidebar_position: 3
+---
+
+# Grouping
+
+Group nodes to transform them together.
+
+```ts
+const group = engine.nodes.addGroup({ x: 100, y: 100 });
+const circle = engine.nodes.addCircle({
+  x: 0,
+  y: 0,
+  radius: 40,
+  fill: "#3b82f6",
+});
+const text = engine.nodes.addText({
+  x: 60,
+  y: -10,
+  text: "Group",
+  fontSize: 20,
+  fill: "#fff",
+});
+
+const g = group.getNode();
+g.add(circle.getNode());
+g.add(text.getNode());
+```

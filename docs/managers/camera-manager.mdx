@@ -1,0 +1,27 @@
+---
+sidebar_position: 2
+---
+
+# CameraManager
+
+`CameraManager` handles panning and zooming over the `world` group.
+
+## Basic Usage
+
+```ts
+// Zoom in/out
+engine.camera.zoomTo(1.5, { x: 400, y: 300 });
+
+// Set absolute scale
+engine.camera.setScale(2);
+
+// Pan to position
+engine.camera.panTo({ x: 100, y: 200 });
+
+// Fit content (if implemented) or reset view
+engine.camera.reset();
+```
+
+## Configuration
+
+When creating `CoreEngine`, you can set `minScale`, `maxScale`, and `draggable`.

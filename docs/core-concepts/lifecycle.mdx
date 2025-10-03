@@ -1,0 +1,31 @@
+---
+sidebar_position: 4
+---
+
+# Lifecycle
+
+Understand how the engine and plugins initialize and clean up.
+
+## Engine Lifecycle
+
+1. Create `CoreEngine`
+2. Create Konva `Stage` and layers
+3. Initialize managers (`NodeManager`, `CameraManager`, `VirtualizationManager`)
+4. Attach plugins
+
+## Plugin Lifecycle
+
+```ts
+import { Plugin, type CoreEngine } from "@flowscape-ui/core-sdk";
+
+class MyPlugin extends Plugin {
+  protected onAttach(core: CoreEngine) {
+    // subscribe to events, add visuals, timers, etc.
+  }
+  protected onDetach(core: CoreEngine) {
+    // unsubscribe, destroy visuals, clear timers
+  }
+}
+```
+
+Plugins are attached at engine construction time via the `plugins` option or later using the `plugins` registry.

@@ -1,0 +1,22 @@
+---
+sidebar_position: 6
+---
+
+# Geometric Nodes
+
+Available nodes:
+- `CircleNode`
+- `EllipseNode`
+- `ArcNode`
+- `ArrowNode`
+- `StarNode`
+- `RingNode`
+- `RegularPolygonNode`
+
+## Examples
+
+```ts
+engine.nodes.addCircle({ x: 200, y: 200, radius: 80, fill: '#3b82f6' });
+engine.nodes.addEllipse({ x: 420, y: 200, radiusX: 90, radiusY: 60, fill: '#ef4444' });
+engine.nodes.addStar({ x: 700, y: 220, numPoints: 5, innerRadius: 40, outerRadius: 80, fill: '#f59e0b' });
+```

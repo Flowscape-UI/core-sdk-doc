@@ -1,0 +1,29 @@
+---
+sidebar_position: 2
+---
+
+# Creating Plugins
+
+Extend the engine by implementing the `Plugin` base class.
+
+## Minimal Plugin
+
+```ts
+import { Plugin } from '@flowscape-ui/core-sdk';
+
+export class MyPlugin extends Plugin {
+  protected onAttach(core) {
+    // Subscribe to events, draw helpers
+    core.eventBus.on('node:created', (n) => console.log('created', n.id));
+  }
+  protected onDetach(core) {
+    // Cleanup
+  }
+}
+```
+
+## Usage
+
+```ts
+new CoreEngine({ container, plugins: [new MyPlugin()] });
+```

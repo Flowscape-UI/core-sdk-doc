@@ -1,0 +1,251 @@
+---
+sidebar_position: 2
+---
+
+# Quick Start
+
+Learn how to create your first canvas application with Flowscape Core SDK in minutes.
+
+## Your First Canvas
+
+Let's create a simple canvas with a few shapes.
+
+### 1. Set Up HTML
+
+First, create a container element for your canvas:
+
+```html title="index.html"
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flowscape Core SDK - Quick Start</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+      }
+      #canvas-container {
+        width: 100vw;
+        height: 100vh;
+        background: #1e1e1e;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="canvas-container"></div>
+    <script type="module" src="/main.ts"></script>
+  </body>
+</html>
+```
+
+### 2. Initialize the Engine
+
+Create the core engine instance:
+
+```typescript title="main.ts"
+import { CoreEngine } from "@flowscape-ui/core-sdk";
+
+// Get the container element
+const container = document.getElementById("canvas-container") as HTMLDivElement;
+
+// Create the engine
+const engine = new CoreEngine({
+  container,
+  width: 1920,
+  height: 1080,
+  autoResize: true,
+  backgroundColor: "#1e1e1e",
+});
+
+console.log("Engine initialized!");
+```
+
+### 3. Add Some Nodes
+
+Let's add different types of nodes to the canvas:
+
+```typescript title="main.ts"
+// Add a circle
+const circle = engine.nodes.addCircle({
+  x: 400,
+  y: 300,
+  radius: 80,
+  fill: "#3b82f6",
+  stroke: "#60a5fa",
+  strokeWidth: 3,
+});
+
+// Add a rectangle (using ShapeNode)
+const rect = engine.nodes.addShape({
+  x: 600,
+  y: 250,
+  width: 150,
+  height: 100,
+  fill: "#10b981",
+  stroke: "#34d399",
+  strokeWidth: 3,
+  cornerRadius: 10,
+});
+
+// Add text
+const text = engine.nodes.addText({
+  x: 400,
+  y: 450,
+  text: "Hello, Flowscape!",
+  fontSize: 32,
+  fill: "#ffffff",
+  fontFamily: "Arial",
+});
+
+// Add a star
+const star = engine.nodes.addStar({
+  x: 900,
+  y: 300,
+  numPoints: 5,
+  innerRadius: 40,
+  outerRadius: 80,
+  fill: "#f59e0b",
+  stroke: "#fbbf24",
+  strokeWidth: 3,
+});
+```
+
+### 4. Make Nodes Interactive
+
+Enable dragging and add event listeners:
+
+```typescript title="main.ts"
+// Make nodes draggable
+circle.getNode().draggable(true);
+rect.getNode().draggable(true);
+text.getNode().draggable(true);
+star.getNode().draggable(true);
+
+// Add hover effects
+circle.getNode().on("mouseenter", () => {
+  circle.getNode().opacity(0.7);
+  engine.stage.container().style.cursor = "pointer";
+});
+
+circle.getNode().on("mouseleave", () => {
+  circle.getNode().opacity(1);
+  engine.stage.container().style.cursor = "default";
+});
+
+// Listen to global events
+engine.eventBus.on("node:created", (node) => {
+  console.log("Node created:", node.id);
+});
+```
+
+## Complete Example
+
+Here's the complete code:
+
+```typescript title="main.ts"
+import { CoreEngine } from "@flowscape-ui/core-sdk";
+
+// Initialize engine
+const container = document.getElementById("canvas-container") as HTMLDivElement;
+const engine = new CoreEngine({
+  container,
+  width: 1920,
+  height: 1080,
+  autoResize: true,
+  backgroundColor: "#1e1e1e",
+});
+
+// Create nodes
+const circle = engine.nodes.addCircle({
+  x: 400,
+  y: 300,
+  radius: 80,
+  fill: "#3b82f6",
+  stroke: "#60a5fa",
+  strokeWidth: 3,
+});
+
+const rect = engine.nodes.addShape({
+  x: 600,
+  y: 250,
+  width: 150,
+  height: 100,
+  fill: "#10b981",
+  stroke: "#34d399",
+  strokeWidth: 3,
+  cornerRadius: 10,
+});
+
+const text = engine.nodes.addText({
+  x: 400,
+  y: 450,
+  text: "Hello, Flowscape!",
+  fontSize: 32,
+  fill: "#ffffff",
+  fontFamily: "Arial",
+});
+
+const star = engine.nodes.addStar({
+  x: 900,
+  y: 300,
+  numPoints: 5,
+  innerRadius: 40,
+  outerRadius: 80,
+  fill: "#f59e0b",
+  stroke: "#fbbf24",
+  strokeWidth: 3,
+});
+
+// Make interactive
+[circle, rect, text, star].forEach((node) => {
+  const konvaNode = node.getNode();
+  konvaNode.draggable(true);
+
+  konvaNode.on("mouseenter", () => {
+    konvaNode.opacity(0.7);
+    engine.stage.container().style.cursor = "pointer";
+  });
+
+  konvaNode.on("mouseleave", () => {
+    konvaNode.opacity(1);
+    engine.stage.container().style.cursor = "default";
+  });
+});
+
+// Event listeners
+engine.eventBus.on("node:created", (node) => {
+  console.log("Node created:", node.id);
+});
+
+console.log("Canvas ready! Drag the shapes around.");
+```
+
+## Running the Example
+
+If you're using Vite:
+
+```bash npm2yarn
+npm run dev
+```
+
+Open your browser and you should see an interactive canvas with draggable shapes!
+
+## What You've Learned
+
+✅ How to initialize the CoreEngine  
+✅ How to create different types of nodes  
+✅ How to make nodes interactive  
+✅ How to listen to events
+
+## Next Steps
+
+- **[Configuration](/docs/getting-started/configuration)** - Learn about all configuration options
+- **[Core Concepts](/docs/core-concepts/architecture)** - Understand the SDK architecture
+- **[Nodes](/docs/nodes/overview)** - Explore all available node types
+- **[Plugins](/docs/plugins/overview)** - Add advanced features with plugins

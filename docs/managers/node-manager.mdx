@@ -1,0 +1,36 @@
+---
+sidebar_position: 1
+---
+
+# NodeManager
+
+`NodeManager` creates and manages nodes on a dedicated layer. All nodes are placed inside an internal `world` group which the camera transforms.
+
+## Creating Nodes
+
+```ts
+const circle = engine.nodes.addCircle({ x: 200, y: 150, radius: 60, fill: '#4f46e5' });
+const text = engine.nodes.addText({ x: 220, y: 260, text: 'Label', fontSize: 24, fill: '#fff' });
+const image = engine.nodes.addImage({ x: 320, y: 120, width: 160, height: 120, src: '/logo.png' });
+```
+
+## Accessing Konva Nodes
+
+Each wrapper exposes `getNode()`:
+
+```ts
+circle.getNode().draggable(true);
+text.getNode().on('dblclick', () => console.log('double clicked'));
+```
+
+## Events
+
+`NodeManager` emits events via the engine `eventBus`:
+
+- `node:created` — fired after a node is added
+
+```ts
+engine.eventBus.on('node:created', (node) => {
+  console.log('New node id', node.id);
+});
+```

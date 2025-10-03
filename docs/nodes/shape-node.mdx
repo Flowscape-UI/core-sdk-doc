@@ -1,0 +1,25 @@
+sidebar_position: 3
+---
+
+# ShapeNode
+
+`ShapeNode` creates a rectangle-like shape with optional corner radius and styles.
+
+## Example
+
+```ts
+const rect = engine.nodes.addShape({
+  x: 300,
+  y: 200,
+  width: 160,
+  height: 100,
+  fill: '#10b981',
+  stroke: '#34d399',
+  strokeWidth: 2,
+  cornerRadius: 8,
+});
+```
+
+## Styling
+
+Use `fill`, `stroke`, `strokeWidth`, and other Konva shape props depending on implementation.

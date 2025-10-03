@@ -1,0 +1,33 @@
+---
+sidebar_position: 3
+---
+
+# Event Bus
+
+The SDK provides a typed `EventBus` for decoupled communication between managers, plugins, and your app.
+
+## Usage
+
+```ts
+import { CoreEngine } from '@flowscape-ui/core-sdk';
+
+const engine = new CoreEngine({ container });
+
+// Subscribe
+const unsubscribe = engine.eventBus.on('node:created', (node) => {
+  console.log('Node created:', node.id);
+});
+
+// Emit (happens internally when nodes are created)
+// engine.eventBus.emit('node:created', node)
+
+// Unsubscribe
+unsubscribe();
+```
+
+## Common Events
+
+- `node:created` — fired when a node is added via `NodeManager`
+- Additional events can be added by managers or plugins
+
+The event types are defined in `CoreEvents` type and enforced at compile-time for safety.

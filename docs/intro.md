@@ -1,47 +1,91 @@
 ---
 sidebar_position: 1
+slug: /
 ---
 
-# Tutorial Intro
+# Welcome to Flowscape Core SDK
 
-Let's discover **Docusaurus in less than 5 minutes**.
+**Flowscape Core SDK** is a powerful, framework-agnostic canvas library built on top of [Konva.js](https://konvajs.org/). It provides a clean, TypeScript-first API for building interactive 2D graphics applications.
 
-## Getting Started
+## Why Flowscape Core SDK?
 
-Get started by **creating a new site**.
+- **🎯 Framework Agnostic** - Works with React, Vue, Angular, Svelte, or vanilla JavaScript
+- **📦 TypeScript First** - Full type safety and IntelliSense support
+- **🚀 High Performance** - Built-in virtualization and LOD (Level of Detail) management
+- **🔌 Plugin System** - Extensible architecture with built-in plugins
+- **🎨 Rich Node Types** - Shapes, text, images, and geometric primitives
+- **📐 Advanced Features** - Grid, rulers, guides, selection, and more
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+## Key Features
 
-### What you'll need
+### Core Engine
+The heart of the SDK - manages the canvas, layers, and coordinates all managers and plugins.
 
-- [Node.js](https://nodejs.org/en/download/) version 20.0 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+### Node System
+Create and manipulate various types of nodes:
+- **Shapes** - Custom vector shapes
+- **Text** - Rich text rendering
+- **Images** - Image nodes with loading support
+- **Geometric** - Circles, ellipses, arcs, arrows, stars, rings, polygons
+- **Groups** - Organize nodes hierarchically
 
-## Generate a new site
+### Managers
+Specialized managers handle different aspects:
+- **NodeManager** - Create, update, and delete nodes
+- **CameraManager** - Pan, zoom, and navigate the canvas
+- **VirtualizationManager** - Optimize rendering for large scenes
+- **LODManager** - Adjust detail based on zoom level
 
-Generate a new Docusaurus site using the **classic template**.
+### Plugin System
+Extend functionality with plugins:
+- Grid, rulers, and guides
+- Selection and area selection
+- Keyboard shortcuts
+- Custom plugins
 
-The classic template will automatically be added to your project after you run the command:
+## Quick Example
 
-```bash
-npm init docusaurus@latest my-website classic
+```typescript
+import { CoreEngine, CircleNode } from '@flowscape-ui/core-sdk';
+
+// Create the engine
+const engine = new CoreEngine({
+  container: document.getElementById('canvas-container'),
+  width: 800,
+  height: 600,
+});
+
+// Add a circle
+const circle = engine.nodes.addCircle({
+  x: 400,
+  y: 300,
+  radius: 50,
+  fill: '#3b82f6',
+});
+
+// Listen to events
+engine.eventBus.on('node:created', (node) => {
+  console.log('Node created:', node.id);
+});
 ```
 
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
+## What's Next?
 
-The command also installs all necessary dependencies you need to run Docusaurus.
+<div className="row">
+  <div className="col col--6">
+    <h3>🚀 Get Started</h3>
+    <p>Learn how to install and set up Flowscape Core SDK in your project.</p>
+    <a href="/docs/getting-started/installation">Installation Guide →</a>
+  </div>
+  <div className="col col--6">
+    <h3>📚 Core Concepts</h3>
+    <p>Understand the architecture and fundamental concepts.</p>
+    <a href="/docs/core-concepts/architecture">Learn the Basics →</a>
+  </div>
+</div>
 
-## Start your site
+## Community & Support
 
-Run the development server:
-
-```bash
-cd my-website
-npm run start
-```
-
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
-
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
-
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+- **GitHub**: [Flowscape-UI/core-sdk](https://github.com/Flowscape-UI/core-sdk)
+- **Issues**: [Report bugs or request features](https://github.com/Flowscape-UI/core-sdk/issues)
+- **License**: Apache-2.0

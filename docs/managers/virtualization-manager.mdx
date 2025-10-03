@@ -1,0 +1,26 @@
+---
+sidebar_position: 3
+---
+
+# VirtualizationManager
+
+`VirtualizationManager` optimizes rendering by updating visibility of nodes based on viewport with a buffer zone and throttling.
+
+## Enabling Virtualization
+
+```ts
+const engine = new CoreEngine({
+  container,
+  virtualization: {
+    enabled: true,
+    bufferZone: 400,
+    throttleMs: 16,
+  },
+});
+```
+
+## How It Works
+
+- Observes camera changes and updates
+- Hides off-screen nodes to reduce draw cost
+- Uses throttling to avoid excessive work

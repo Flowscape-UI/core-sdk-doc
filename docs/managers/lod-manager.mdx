@@ -1,0 +1,21 @@
+---
+sidebar_position: 4
+---
+
+# LODManager
+
+The Level of Detail (LOD) system reduces visual complexity at lower zoom levels and increases detail at higher zoom levels.
+
+> Note: If the LOD API is experimental, treat this as conceptual guidance.
+
+## Example Strategy
+
+```ts
+engine.camera.onScaleChange((scale) => {
+  if (scale < 0.5) {
+    // hide tiny details
+  } else if (scale > 2) {
+    // show high-detail labels
+  }
+});
+```

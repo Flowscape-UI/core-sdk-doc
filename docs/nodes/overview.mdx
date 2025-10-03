@@ -1,0 +1,31 @@
+---
+sidebar_position: 1
+---
+
+# Nodes Overview
+
+Nodes are typed wrappers around Konva primitives with a common API from `BaseNode`.
+
+## Available Nodes
+
+- `ShapeNode`
+- `TextNode`
+- `ImageNode`
+- `CircleNode`, `EllipseNode`, `ArcNode`, `ArrowNode`, `StarNode`, `RingNode`, `RegularPolygonNode`
+- `GroupNode`
+
+## Common API (BaseNode)
+
+```ts
+node.getNode();      // Konva instance
+node.setPosition({ x: 100, y: 100 });
+node.getPosition();
+node.remove();
+```
+
+## Example
+
+```ts
+const star = engine.nodes.addStar({ x: 500, y: 300, innerRadius: 40, outerRadius: 80, numPoints: 5, fill: '#f59e0b' });
+star.getNode().draggable(true);
+```
