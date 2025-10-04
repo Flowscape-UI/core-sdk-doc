@@ -1,4 +1,5 @@
 import { themes as prismThemes } from "prism-react-renderer";
+import webpack from "webpack";
 import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
 
@@ -36,6 +37,26 @@ const config: Config = {
     defaultLocale: "en",
     locales: ["en"],
   },
+
+  // Fix build error: Module not found: Can't resolve 'canvas' (optional peer of Konva)
+  // We don't need node-canvas on the server; ignore it during SSR bundling
+  plugins: [
+    function canvasFallbackPlugin() {
+      return {
+        name: "canvas-fallback-plugin",
+        configureWebpack() {
+          return {
+            resolve: {
+              fallback: {
+                canvas: false,
+              },
+            },
+            plugins: [new webpack.IgnorePlugin({ resourceRegExp: /^canvas$/ })],
+          };
+        },
+      };
+    },
+  ],
 
   presets: [
     [
