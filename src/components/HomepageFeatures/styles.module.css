@@ -1,11 +1,54 @@
 .features {
   display: flex;
   align-items: center;
-  padding: 2rem 0;
+  padding: 2rem 0 3rem 0;
   width: 100%;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(15, 23, 42, 0.5) 100%
+  );
+  min-height: 50vh;
 }
 
 .featureSvg {
-  height: 200px;
-  width: 200px;
+  height: 140px;
+  width: 140px;
+  filter: drop-shadow(0 4px 12px rgba(32, 110, 255, 0.2));
+  transition:
+    transform 0.3s ease,
+    filter 0.3s ease;
+}
+
+.featureSvg:hover {
+  transform: translateY(-8px) scale(1.05);
+  filter: drop-shadow(0 8px 24px rgba(32, 110, 255, 0.4));
+}
+
+/* Feature card animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.features .col {
+  animation: fadeInUp 0.6s ease-out both;
+}
+
+.features .col:nth-child(1) {
+  animation-delay: 0.2s;
+}
+
+.features .col:nth-child(2) {
+  animation-delay: 0.4s;
+}
+
+.features .col:nth-child(3) {
+  animation-delay: 0.6s;
 }

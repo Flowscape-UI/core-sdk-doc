@@ -15,11 +15,14 @@ import {
 
 export default function LiveCanvas() {
   const ref = useRef<HTMLDivElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const engineRef = useRef<any | null>(null);
 
   // UI state
   const [gridOn, setGridOn] = useState(true);
   const [selectionOn, setSelectionOn] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [rulersOn, setRulersOn] = useState(false);
 
   // Plugin instances
   const gridPluginRef = useRef<any | null>(null);
@@ -50,20 +53,10 @@ export default function LiveCanvas() {
       minScaleToShow: 15,
       enableSnap: true,
     });
-    rulerPluginRef.current = new RulerPlugin();
-    rulerGuidesRef.current = new RulerGuidesPlugin({
-      snapToGrid: true,
-      gridStep: 1,
-    });
-    rulerHighlightRef.current = new RulerHighlightPlugin({
-      highlightColor: "#2b83ff",
-      highlightOpacity: 0.3,
-    });
-    rulerManagerRef.current = new RulerManagerPlugin({ enabled: true });
 
     areaSelectionRef.current = new AreaSelectionPlugin();
 
-    // Initialize engine with default plugins attached
+    // Initialize engine with default plugins attached (rulers disabled by default)
     const engine = new CoreEngine({
       container: ref.current,
       autoResize: true,
@@ -75,31 +68,288 @@ export default function LiveCanvas() {
         selectionPluginRef.current,
         areaSelectionRef.current,
         nodeHotkeysRef.current,
-        rulerPluginRef.current,
-        rulerGuidesRef.current, // must be after RulerPlugin
-        rulerHighlightRef.current, // must be after RulerPlugin
-        rulerManagerRef.current,
       ],
     });
     engineRef.current = engine;
+    // Ensure correct initial sizing
+    const rect0 = ref.current.getBoundingClientRect();
+    engine.stage.width(rect0.width);
+    engine.stage.height(rect0.height);
+    engine.nodes.layer.draw();
 
-    // Demo content
-    const circle = engine.nodes.addCircle({
-      x: 240,
-      y: 180,
-      radius: 60,
-      fill: "#2563eb",
-    });
-    circle.getNode().draggable(true);
+    // Demo content - Landing page mockup (centered)
+    const centerX = 30; // Left margin for centering
+    const centerY = 30; // Top margin
 
-    const text = engine.nodes.addText({
-      x: 340,
-      y: 320,
-      text: "Drag the circle",
-      fontSize: 24,
-      fill: "#fff",
+    // Create a main group for all mockup elements
+    const mockupGroup = engine.nodes.addGroup({
+      x: 0,
+      y: 0,
+      draggable: true,
     });
-    text.getNode().draggable(true);
+
+    // Header section
+    const headerBg = engine.nodes.addShape({
+      x: centerX,
+      y: centerY,
+      width: 900,
+      height: 80,
+      cornerRadius: 12,
+      fill: "#1e293b",
+      stroke: "#334155",
+      strokeWidth: 1,
+    });
+    headerBg.getNode().moveTo(mockupGroup.getNode());
+
+    const logoCircle = engine.nodes.addCircle({
+      x: centerX + 40,
+      y: centerY + 40,
+      radius: 20,
+      fill: "#206eff",
+    });
+    logoCircle.getNode().moveTo(mockupGroup.getNode());
+
+    const logoText = engine.nodes.addText({
+      x: centerX + 75,
+      y: centerY + 30,
+      text: "Flowscape SDK",
+      fontSize: 20,
+      fontStyle: "bold",
+      fill: "#f1f5f9",
+      fontFamily: "Inter, ui-sans-serif, system-ui",
+    });
+    logoText.getNode().moveTo(mockupGroup.getNode());
+
+    // Navigation items
+    const navItems = ["Docs", "Examples", "API", "GitHub"];
+    navItems.forEach((item, i) => {
+      const navText = engine.nodes.addText({
+        x: centerX + 600 + i * 75,
+        y: centerY + 30,
+        text: item,
+        fontSize: 15,
+        fill: "#94a3b8",
+        fontFamily: "Inter, ui-sans-serif, system-ui",
+      });
+      navText.getNode().moveTo(mockupGroup.getNode());
+    });
+
+    // Hero section
+    const heroTitle = engine.nodes.addText({
+      x: centerX + 200,
+      y: centerY + 130,
+      text: "Build Interactive Canvas",
+      fontSize: 48,
+      fontStyle: "bold",
+      fill: "#f8fafc",
+      fontFamily: "Inter, ui-sans-serif, system-ui",
+    });
+    heroTitle.getNode().moveTo(mockupGroup.getNode());
+
+    const heroSubtitle = engine.nodes.addText({
+      x: centerX + 290,
+      y: centerY + 190,
+      text: "Framework-agnostic 2D engine",
+      fontSize: 28,
+      fill: "#1afff4",
+      fontFamily: "Inter, ui-sans-serif, system-ui",
+    });
+    heroSubtitle.getNode().moveTo(mockupGroup.getNode());
+
+    // CTA Buttons
+    const ctaButton1 = engine.nodes.addShape({
+      x: centerX + 310,
+      y: centerY + 248,
+      width: 160,
+      height: 50,
+      cornerRadius: 8,
+      fill: "#206eff",
+      stroke: "#1afff4",
+      strokeWidth: 2,
+    });
+    ctaButton1.getNode().moveTo(mockupGroup.getNode());
+
+    const ctaText1 = engine.nodes.addText({
+      x: centerX + 340,
+      y: centerY + 265,
+      text: "Get Started",
+      fontSize: 18,
+      fontStyle: "bold",
+      fill: "#ffffff",
+      fontFamily: "Inter, ui-sans-serif, system-ui",
+    });
+    ctaText1.getNode().moveTo(mockupGroup.getNode());
+
+    const ctaButton2 = engine.nodes.addShape({
+      x: centerX + 505,
+      y: centerY + 248,
+      width: 160,
+      height: 50,
+      cornerRadius: 8,
+      fill: "transparent",
+      stroke: "#64748b",
+      strokeWidth: 2,
+    });
+    ctaButton2.getNode().moveTo(mockupGroup.getNode());
+
+    const ctaText2 = engine.nodes.addText({
+      x: centerX + 540,
+      y: centerY + 265,
+      text: "View Demo",
+      fontSize: 18,
+      fontStyle: "bold",
+      fill: "#cbd5e1",
+      fontFamily: "Inter, ui-sans-serif, system-ui",
+    });
+    ctaText2.getNode().moveTo(mockupGroup.getNode());
+
+    // Feature cards
+    const cardData = [
+      { x: centerX + 30, title: "TypeScript", icon: "TS", color: "#3178c6" },
+      {
+        x: centerX + 310,
+        title: "Plugin System",
+        icon: "🔌",
+        color: "#10b981",
+      },
+      {
+        x: centerX + 590,
+        title: "High Performance",
+        icon: "⚡",
+        color: "#f59e0b",
+      },
+    ];
+
+    cardData.forEach((card, index) => {
+      // Card background
+      const cardBg = engine.nodes.addShape({
+        x: card.x,
+        y: centerY + 330,
+        width: 240,
+        height: 180,
+        cornerRadius: 12,
+        fill: "#1e293b",
+        stroke: "#334155",
+        strokeWidth: 1,
+      });
+      cardBg.getNode().moveTo(mockupGroup.getNode());
+
+      // Icon circle
+      const iconCircle = engine.nodes.addCircle({
+        x: card.x + 120,
+        y: centerY + 380,
+        radius: 30,
+        fill: card.color,
+      });
+      iconCircle.getNode().opacity(0.2);
+      iconCircle.getNode().moveTo(mockupGroup.getNode());
+
+      // Icon text - centered for each card
+      const iconXPositions = [
+        card.x + 105, // TypeScript "TS"
+        card.x + 105, // Plugin System emoji
+        card.x + 103, // High Performance emoji
+      ];
+      const iconText = engine.nodes.addText({
+        x: iconXPositions[index],
+        y: centerY + 365,
+        text: card.icon,
+        fontSize: 28,
+        fill: card.color,
+        fontFamily: "Inter, ui-sans-serif, system-ui",
+      });
+      iconText.getNode().moveTo(mockupGroup.getNode());
+
+      // Card title - centered for each card
+      const titleXPositions = [
+        card.x + 65, // TypeScript
+        card.x + 55, // Plugin System
+        card.x + 35, // High Performance
+      ];
+      const cardTitle = engine.nodes.addText({
+        x: titleXPositions[index],
+        y: centerY + 430,
+        text: card.title,
+        fontSize: 20,
+        fontStyle: "bold",
+        fill: "#f1f5f9",
+        fontFamily: "Inter, ui-sans-serif, system-ui",
+      });
+      cardTitle.getNode().moveTo(mockupGroup.getNode());
+
+      // Card description - centered for each card
+      const descriptions = [
+        "Full type safety\nwith TypeScript",
+        "Extensible via\nplugins",
+        "Optimized for\nsmooth rendering",
+      ];
+      const descXPositions = [
+        card.x + 68, // TypeScript description
+        card.x + 80, // Plugin System description
+        card.x + 70, // High Performance description
+      ];
+      const cardDesc = engine.nodes.addText({
+        x: descXPositions[index],
+        y: centerY + 460,
+        text: descriptions[index],
+        fontSize: 14,
+        fill: "#94a3b8",
+        fontFamily: "Inter, ui-sans-serif, system-ui",
+        align: "center",
+      });
+      cardDesc.getNode().moveTo(mockupGroup.getNode());
+    });
+
+    // Code snippet visualization
+    const codeBox = engine.nodes.addShape({
+      x: centerX + 30,
+      y: centerY + 550,
+      width: 840,
+      height: 140,
+      cornerRadius: 8,
+      fill: "#0f172a",
+      stroke: "#1e293b",
+      strokeWidth: 1,
+    });
+    codeBox.getNode().moveTo(mockupGroup.getNode());
+
+    const codeLines = [
+      'import { CoreEngine } from "@flowscape-ui/core-sdk";',
+      "",
+      "const engine = new CoreEngine({ container });",
+      "engine.nodes.addCircle({ x: 100, y: 100, radius: 50 });",
+    ];
+
+    codeLines.forEach((line, i) => {
+      const codeLine = engine.nodes.addText({
+        x: centerX + 50,
+        y: centerY + 570 + i * 28,
+        text: line,
+        fontSize: 14,
+        fill: i === 0 ? "#1afff4" : i === 3 ? "#10b981" : "#cbd5e1",
+        fontFamily: "Fira Code, monospace",
+      });
+      codeLine.getNode().moveTo(mockupGroup.getNode());
+    });
+
+    // Decorative elements
+    const decorCircle1 = engine.nodes.addCircle({
+      x: centerX + 900,
+      y: centerY + 170,
+      radius: 40,
+      fill: "#206eff",
+    });
+    decorCircle1.getNode().opacity(0.15);
+    decorCircle1.getNode().moveTo(mockupGroup.getNode());
+
+    const decorCircle2 = engine.nodes.addCircle({
+      x: centerX - 20,
+      y: centerY + 450,
+      radius: 25,
+      fill: "#1afff4",
+    });
+    decorCircle2.getNode().opacity(0.15);
+    decorCircle2.getNode().moveTo(mockupGroup.getNode());
 
     return () => {
       // dispose Konva stage
@@ -118,6 +368,35 @@ export default function LiveCanvas() {
       rulerGuidesRef.current = null;
       rulerHighlightRef.current = null;
       rulerManagerRef.current = null;
+    };
+  }, []);
+
+  // Track native fullscreen changes (ESC, browser UI)
+  useEffect(() => {
+    const updateEngineSize = () => {
+      const engine = engineRef.current;
+      const el = ref.current;
+      if (!engine || !el) return;
+      const r = el.getBoundingClientRect();
+      engine.stage.width(r.width);
+      engine.stage.height(r.height);
+      engine.nodes.layer.draw();
+    };
+
+    const onFsChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+      // Resize on next frame to reflect new layout
+      requestAnimationFrame(() => updateEngineSize());
+      // And once more after CSS settles
+      setTimeout(updateEngineSize, 60);
+    };
+    const onResize = () => updateEngineSize();
+
+    document.addEventListener("fullscreenchange", onFsChange);
+    window.addEventListener("resize", onResize);
+    return () => {
+      document.removeEventListener("fullscreenchange", onFsChange);
+      window.removeEventListener("resize", onResize);
     };
   }, []);
 
@@ -223,6 +502,43 @@ export default function LiveCanvas() {
     }
   };
 
+  const toggleRulers = () => {
+    const engine = engineRef.current;
+    if (!engine) return;
+    if (!rulersOn) {
+      // Enable rulers
+      rulerPluginRef.current = new RulerPlugin();
+      rulerGuidesRef.current = new RulerGuidesPlugin({
+        snapToGrid: true,
+        gridStep: 1,
+      });
+      rulerHighlightRef.current = new RulerHighlightPlugin({
+        highlightColor: "#2b83ff",
+        highlightOpacity: 0.3,
+      });
+      rulerManagerRef.current = new RulerManagerPlugin({ enabled: true });
+
+      rulerPluginRef.current.attach(engine);
+      rulerGuidesRef.current.attach(engine);
+      rulerHighlightRef.current.attach(engine);
+      rulerManagerRef.current.attach(engine);
+      setRulersOn(true);
+    } else {
+      // Disable rulers
+      rulerPluginRef.current?.detach(engine);
+      rulerGuidesRef.current?.detach(engine);
+      rulerHighlightRef.current?.detach(engine);
+      rulerManagerRef.current?.detach(engine);
+
+      rulerPluginRef.current = null;
+      rulerGuidesRef.current = null;
+      rulerHighlightRef.current = null;
+      rulerManagerRef.current = null;
+      setRulersOn(false);
+    }
+    engine.nodes.layer.draw();
+  };
+
   const clearScene = () => {
     const engine = engineRef.current;
     if (!engine) return;
@@ -233,13 +549,47 @@ export default function LiveCanvas() {
     engine.nodes.layer.draw();
   };
 
+  const toggleFullscreen = async () => {
+    try {
+      if (!isFullscreen) {
+        await containerRef.current?.requestFullscreen?.();
+        // ensure size after entering FS
+        requestAnimationFrame(() => {
+          const engine = engineRef.current;
+          const el = ref.current;
+          if (!engine || !el) return;
+          const r = el.getBoundingClientRect();
+          engine.stage.width(r.width);
+          engine.stage.height(r.height);
+          engine.nodes.layer.draw();
+        });
+      } else {
+        await document.exitFullscreen?.();
+        // ensure size after exiting FS
+        requestAnimationFrame(() => {
+          const engine = engineRef.current;
+          const el = ref.current;
+          if (!engine || !el) return;
+          const r = el.getBoundingClientRect();
+          engine.stage.width(r.width);
+          engine.stage.height(r.height);
+          engine.nodes.layer.draw();
+        });
+      }
+    } catch (e) {
+      // ignore
+    }
+  };
+
   return (
     <div
+      ref={containerRef}
       style={{
         borderRadius: 12,
         border: "1px solid #334155",
         overflow: "hidden",
         background: "#0b1220",
+        height: isFullscreen ? "100vh" : undefined,
       }}
     >
       {/* Toolbar */}
@@ -255,7 +605,9 @@ export default function LiveCanvas() {
           flexWrap: "wrap",
         }}
       >
-        <strong style={{ marginRight: 8 }}>Demo</strong>
+        <strong style={{ marginRight: 8 }}>
+          🎨 Interactive Landing Page Mockup
+        </strong>
         <button onClick={addCircle} style={btnStyle}>
           + Circle
         </button>
@@ -273,30 +625,16 @@ export default function LiveCanvas() {
             margin: "0 6px",
           }}
         />
-        <button onClick={zoomIn} style={btnStyle}>
-          Zoom In
-        </button>
-        <button onClick={zoomOut} style={btnStyle}>
-          Zoom Out
-        </button>
-        <button onClick={resetView} style={btnStyle}>
-          Reset View
-        </button>
-        <span
-          style={{
-            width: 1,
-            height: 22,
-            background: "#334155",
-            margin: "0 6px",
-          }}
-        />
-        <button onClick={toggleGrid} style={btnStyle}>
-          {gridOn ? "Hide Grid" : "Show Grid"}
+        <button onClick={toggleRulers} style={btnStyle}>
+          {rulersOn ? "Hide Rulers" : "Show Rulers"}
         </button>
         <button onClick={toggleSelection} style={btnStyle}>
           {selectionOn ? "Disable Selection" : "Enable Selection"}
         </button>
         <span style={{ flex: 1 }} />
+        <button onClick={toggleFullscreen} style={btnStyle}>
+          {isFullscreen ? "Close Fullscreen (Esc)" : "Fullscreen"}
+        </button>
         <button
           onClick={clearScene}
           style={{ ...btnStyle, color: "#fca5a5", borderColor: "#7f1d1d" }}
@@ -306,7 +644,13 @@ export default function LiveCanvas() {
       </div>
 
       {/* Canvas area */}
-      <div style={{ width: "100%", height: 420 }} ref={ref} />
+      <div
+        style={{
+          width: "100%",
+          height: isFullscreen ? "calc(100vh - 56px)" : 820,
+        }}
+        ref={ref}
+      />
     </div>
   );
 }

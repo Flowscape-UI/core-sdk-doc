@@ -6,22 +6,22 @@ sidebar_position: 6
 
 Try the SDK live below. You can drag shapes and see events in your browser console.
 
-import LiveCanvas from '@site/src/components/LiveCanvas';
+import LiveCanvas from "@site/src/components/LiveCanvas";
 
 <LiveCanvas />
 
 ## Code Snippet
 
 ```tsx title="LiveCanvas.tsx"
-import React, { useEffect, useRef } from 'react';
-import { CoreEngine } from '@flowscape-ui/core-sdk';
+import React, { useEffect, useRef } from "react";
+import { CoreEngine } from "@flowscape-ui/core-sdk";
 
 export default function LiveCanvas() {
   const ref = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     if (!ref.current) return;
     const engine = new CoreEngine({ container: ref.current, autoResize: true });
-    engine.nodes.addCircle({ x: 240, y: 180, radius: 60, fill: '#2563eb' });
+    engine.nodes.addCircle({ x: 240, y: 180, radius: 60, fill: "#2563eb" });
   }, []);
   return <div ref={ref} style={{ height: 420 }} />;
 }

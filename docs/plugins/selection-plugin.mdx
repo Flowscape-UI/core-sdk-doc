@@ -4,14 +4,180 @@ sidebar_position: 5
 
 # Selection Plugin
 
-Enables mouse selection of nodes, showing selection bounds.
+Enables mouse selection of nodes with transformation controls, drag & drop, and grouping support.
 
-## Usage
+## Overview
+
+The `SelectionPlugin` provides:
+- **Single and multi-selection** of nodes
+- **Transformation controls** (resize, rotate)
+- **Drag and drop** functionality
+- **Grouping operations** with keyboard shortcuts
+- **Aspect ratio locking** during resize
+
+## Basic Usage
 
 ```ts
 import { SelectionPlugin } from "@flowscape-ui/core-sdk";
 
-const engine = new CoreEngine({ container, plugins: [new SelectionPlugin()] });
+const engine = new CoreEngine({ 
+  container, 
+  plugins: [new SelectionPlugin()] 
+});
+
+// Create some nodes
+const rect = engine.nodes.addShape({ x: 100, y: 100, width: 100, height: 100 });
+const circle = engine.nodes.addCircle({ x: 250, y: 100, radius: 50 });
+
+// Nodes are now selectable by clicking
 ```
 
-You can combine with `AreaSelectionPlugin` for drag-to-select behavior.
+## Configuration
+
+```ts
+const selectionPlugin = new SelectionPlugin({
+  dragEnabled: true,        // Enable drag and drop
+  rotateEnabled: true,      // Enable rotation handles
+  resizeEnabled: true,      // Enable resize handles
+  borderStroke: '#2563eb',  // Selection border color
+  borderStrokeWidth: 2,     // Selection border width
+});
+```
+
+## Multi-Selection
+
+Select multiple nodes by holding `Shift` and clicking:
+
+```ts
+// Shift+Click adds/removes nodes from selection
+// - Click a node to select it
+// - Shift+Click another node to add to selection
+// - Shift+Click a selected node to remove from selection
+```
+
+## Grouping
+
+The Selection Plugin supports grouping operations with keyboard shortcuts.
+
+### Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| `Ctrl+G` | Group selected nodes |
+| `Ctrl+Shift+G` | Ungroup selected group |
+| `Shift+Click` | Add/remove node to/from selection |
+| `Shift` (during resize) | Lock aspect ratio |
+
+### Programmatic Grouping
+
+```ts
+// Create nodes
+const rect1 = engine.nodes.addShape({ x: 100, y: 100, width: 50, height: 50 });
+const rect2 = engine.nodes.addShape({ x: 160, y: 100, width: 50, height: 50 });
+
+// Create a group
+const group = engine.nodes.addGroup({ x: 0, y: 0 });
+
+// Add nodes to group
+rect1.getNode().moveTo(group.getNode());
+rect2.getNode().moveTo(group.getNode());
+
+// Now you can transform the entire group as one unit
+```
+
+## Transformation Controls
+
+### Resize
+
+- Drag corner handles to resize
+- Hold `Shift` while resizing to lock aspect ratio
+- Drag edge handles for single-axis resize
+
+### Rotate
+
+- Drag rotation handle (usually at the top) to rotate
+- Rotation is around the node's center
+
+### Move
+
+- Click and drag any selected node to move
+- All selected nodes move together
+
+## Aspect Ratio Lock
+
+Hold `Shift` during resize to maintain the original aspect ratio:
+
+```ts
+// User holds Shift while dragging a corner handle
+// → Width and height scale proportionally
+```
+
+## Combined with Area Selection
+
+For drag-to-select behavior, combine with `AreaSelectionPlugin`:
+
+```ts
+import { SelectionPlugin, AreaSelectionPlugin } from "@flowscape-ui/core-sdk";
+
+const engine = new CoreEngine({
+  container,
+  plugins: [
+    new SelectionPlugin(),
+    new AreaSelectionPlugin(), // Shift+Drag to select area
+  ],
+});
+```
+
+## Events
+
+Listen to selection events:
+
+```ts
+engine.eventBus.on('node:selected', (node) => {
+  console.log('Node selected:', node);
+});
+
+engine.eventBus.on('node:deselected', (node) => {
+  console.log('Node deselected:', node);
+});
+
+engine.eventBus.on('selection:changed', (nodes) => {
+  console.log('Selection changed:', nodes);
+});
+```
+
+## Example: Complete Setup
+
+```ts
+import { 
+  CoreEngine, 
+  SelectionPlugin, 
+  AreaSelectionPlugin,
+  NodeHotkeysPlugin 
+} from "@flowscape-ui/core-sdk";
+
+const engine = new CoreEngine({
+  container: document.getElementById('canvas')!,
+  plugins: [
+    new SelectionPlugin({ dragEnabled: true }),
+    new AreaSelectionPlugin(),
+    new NodeHotkeysPlugin(), // For Ctrl+G grouping
+  ],
+});
+
+// Create nodes
+const rect1 = engine.nodes.addShape({ 
+  x: 100, y: 100, width: 100, height: 100, fill: '#3b82f6' 
+});
+const rect2 = engine.nodes.addShape({ 
+  x: 220, y: 100, width: 100, height: 100, fill: '#10b981' 
+});
+
+// Now you can:
+// - Click to select
+// - Shift+Click to multi-select
+// - Ctrl+G to group selected nodes
+// - Drag to move
+// - Resize with handles
+// - Hold Shift while resizing to lock aspect ratio
+```

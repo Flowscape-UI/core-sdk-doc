@@ -4,7 +4,14 @@ sidebar_position: 6
 
 # Hotkeys Plugins
 
-Keyboard shortcuts for camera and nodes.
+Keyboard shortcuts for camera and nodes operations.
+
+## Overview
+
+Flowscape SDK provides two hotkey plugins:
+
+- **NodeHotkeysPlugin** - shortcuts for node operations (copy, paste, delete, z-index)
+- **CameraHotkeysPlugin** - shortcuts for camera controls (zoom, pan)
 
 ## Usage
 
@@ -17,4 +24,106 @@ const engine = new CoreEngine({
 });
 ```
 
-Common shortcuts include zoom in/out, pan, duplicate, delete, etc.
+## NodeHotkeysPlugin
+
+Provides keyboard shortcuts for node manipulation.
+
+### Clipboard Operations
+
+| Shortcut | Action              |
+| -------- | ------------------- |
+| `Ctrl+C` | Copy selected nodes |
+| `Ctrl+X` | Cut selected nodes  |
+| `Ctrl+V` | Paste nodes         |
+
+### Node Management
+
+| Shortcut               | Action                            |
+| ---------------------- | --------------------------------- |
+| `Delete` / `Backspace` | Delete selected nodes             |
+| `Ctrl+]`               | Move node up (increase z-index)   |
+| `Ctrl+[`               | Move node down (decrease z-index) |
+
+### Example
+
+```ts
+import { NodeHotkeysPlugin } from "@flowscape-ui/core-sdk";
+
+const engine = new CoreEngine({
+  container,
+  plugins: [new NodeHotkeysPlugin()],
+});
+
+// Create some nodes
+const rect = engine.nodes.addShape({ x: 100, y: 100, width: 100, height: 100 });
+const circle = engine.nodes.addCircle({ x: 200, y: 200, radius: 50 });
+
+// Now you can:
+// - Select nodes and press Ctrl+C to copy
+// - Press Ctrl+V to paste
+// - Press Delete to remove selected nodes
+// - Press Ctrl+] to move node forward
+```
+
+## CameraHotkeysPlugin
+
+Provides keyboard shortcuts for camera navigation.
+
+### Zoom Controls
+
+| Shortcut     | Action                         |
+| ------------ | ------------------------------ |
+| `Ctrl+Wheel` | Zoom in/out at cursor position |
+| `+` / `=`    | Zoom in                        |
+| `-`          | Zoom out                       |
+
+### Pan Controls
+
+| Shortcut            | Action                  |
+| ------------------- | ----------------------- |
+| `Arrow Keys`        | Pan camera in direction |
+| `Middle Mouse+Drag` | Pan camera with mouse   |
+| `Right Mouse+Drag`  | Pan camera with mouse   |
+
+### Example
+
+```ts
+import { CameraHotkeysPlugin } from "@flowscape-ui/core-sdk";
+
+const engine = new CoreEngine({
+  container,
+  plugins: [new CameraHotkeysPlugin()],
+});
+
+// Now you can:
+// - Hold Ctrl and scroll to zoom
+// - Press + or - to zoom in/out
+// - Use arrow keys to pan
+// - Hold Space and drag to pan
+```
+
+## Combined Usage
+
+For the best experience, use both plugins together:
+
+```ts
+import {
+  CoreEngine,
+  CameraHotkeysPlugin,
+  NodeHotkeysPlugin,
+  SelectionPlugin,
+} from "@flowscape-ui/core-sdk";
+
+const engine = new CoreEngine({
+  container,
+  plugins: [
+    new SelectionPlugin(), // Required for node selection
+    new NodeHotkeysPlugin(), // Node operations
+    new CameraHotkeysPlugin(), // Camera controls
+  ],
+});
+```
+
+## Customization
+
+Both plugins work out of the box with default settings. If you need custom hotkeys, you can create your own plugin by extending the `Plugin` class and listening to keyboard events through the event bus.

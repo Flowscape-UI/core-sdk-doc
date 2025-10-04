@@ -6,7 +6,7 @@ import type * as Preset from "@docusaurus/preset-classic";
 
 const config: Config = {
   title: "Flowscape Core SDK",
-  tagline: "Framework-agnostic 2D canvas engine built on Konva",
+  tagline: "Powerful 2D canvas engine built on Konva.js",
   favicon: "img/favicon.ico",
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
@@ -70,7 +70,9 @@ const config: Config = {
     // Replace with your project's social card
     image: "img/docusaurus-social-card.jpg",
     colorMode: {
-      respectPrefersColorScheme: true,
+      defaultMode: "dark",
+      disableSwitch: true,
+      respectPrefersColorScheme: false,
     },
     navbar: {
       title: "Flowscape Core SDK",
@@ -79,13 +81,6 @@ const config: Config = {
         src: "img/logo.svg",
       },
       items: [
-        {
-          type: "docSidebar",
-          sidebarId: "docs",
-          position: "left",
-          label: "Docs",
-        },
-        { to: "/blog", label: "Blog", position: "left" },
         {
           href: "https://github.com/Flowscape-UI/core-sdk",
           label: "GitHub",
@@ -139,7 +134,9 @@ const config: Config = {
       copyright: `Copyright © ${new Date().getFullYear()} Flowscape UI. Built with Docusaurus.`,
     },
     prism: {
-      theme: prismThemes.github,
+      theme: prismThemes.vsDark,
+      darkTheme: prismThemes.vsDark,
+      additionalLanguages: ["typescript", "javascript", "jsx", "tsx"],
     },
   } satisfies Preset.ThemeConfig,
 };

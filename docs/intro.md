@@ -9,48 +9,57 @@ slug: /
 
 ## Why Flowscape Core SDK?
 
-- **🎯 Framework Agnostic** - Works with React, Vue, Angular, Svelte, or vanilla JavaScript
-- **📦 TypeScript First** - Full type safety and IntelliSense support
-- **🚀 High Performance** - Built-in virtualization and LOD (Level of Detail) management
-- **🔌 Plugin System** - Extensible architecture with built-in plugins
-- **🎨 Rich Node Types** - Shapes, text, images, and geometric primitives
-- **📐 Advanced Features** - Grid, rulers, guides, selection, and more
+- 🎯 Framework-agnostic — works with React, Vue, Svelte, Angular or vanilla JS
+- 🧩 Plugin system — extensible architecture with ready-to-use plugins
+- 📐 Complete toolset — grid, rulers, guides, area selection
+- ⌨️ Hotkeys — Ctrl+C/V/X, Delete, Ctrl+G for grouping
+- 🎨 Rich shapes — rectangles, circles, text, images, arrows, stars
+- 🔄 Transformations — rotation, scaling, movement with aspect ratio lock
+- 📦 TypeScript-first — full typing out of the box
+- 🚀 Optimized — tree-shaking, ESM + CJS, source maps
 
 ## Key Features
 
 ### Core Engine
+
 The heart of the SDK - manages the canvas, layers, and coordinates all managers and plugins.
 
 ### Node System
+
 Create and manipulate various types of nodes:
-- **Shapes** - Custom vector shapes
-- **Text** - Rich text rendering
-- **Images** - Image nodes with loading support
-- **Geometric** - Circles, ellipses, arcs, arrows, stars, rings, polygons
-- **Groups** - Organize nodes hierarchically
+
+- 🎨 Shapes - Custom vector shapes
+- 📝 Text - Rich text rendering
+- 📸 Images - Image nodes with loading support
+- 📊 Geometric - Circles, ellipses, arcs, arrows, stars, rings, polygons
+- 📦 Groups - Organize nodes hierarchically
 
 ### Managers
+
 Specialized managers handle different aspects:
-- **NodeManager** - Create, update, and delete nodes
-- **CameraManager** - Pan, zoom, and navigate the canvas
-- **VirtualizationManager** - Optimize rendering for large scenes
-- **LODManager** - Adjust detail based on zoom level
+
+- 📦 NodeManager - Create, update, and delete nodes
+- 📊 CameraManager - Pan, zoom, and navigate the canvas
+- 📦 VirtualizationManager - Optimize rendering for large scenes
+- 📦 LODManager - Adjust detail based on zoom level
 
 ### Plugin System
+
 Extend functionality with plugins:
-- Grid, rulers, and guides
-- Selection and area selection
-- Keyboard shortcuts
-- Custom plugins
+
+- 📊 Grid, rulers, and guides
+- 📦 Selection and area selection
+- 📦 Keyboard shortcuts
+- 📦 Custom plugins
 
 ## Quick Example
 
 ```typescript
-import { CoreEngine, CircleNode } from '@flowscape-ui/core-sdk';
+import { CoreEngine, CircleNode } from "@flowscape-ui/core-sdk";
 
 // Create the engine
 const engine = new CoreEngine({
-  container: document.getElementById('canvas-container'),
+  container: document.getElementById("canvas-container"),
   width: 800,
   height: 600,
 });
@@ -60,12 +69,12 @@ const circle = engine.nodes.addCircle({
   x: 400,
   y: 300,
   radius: 50,
-  fill: '#3b82f6',
+  fill: "#3b82f6",
 });
 
 // Listen to events
-engine.eventBus.on('node:created', (node) => {
-  console.log('Node created:', node.id);
+engine.eventBus.on("node:created", (node) => {
+  console.log("Node created:", node.id);
 });
 ```
 
@@ -86,6 +95,6 @@ engine.eventBus.on('node:created', (node) => {
 
 ## Community & Support
 
-- **GitHub**: [Flowscape-UI/core-sdk](https://github.com/Flowscape-UI/core-sdk)
-- **Issues**: [Report bugs or request features](https://github.com/Flowscape-UI/core-sdk/issues)
-- **License**: Apache-2.0
+- 📦 GitHub: [Flowscape-UI/core-sdk](https://github.com/Flowscape-UI/core-sdk)
+- 📦 Issues: [Report bugs or request features](https://github.com/Flowscape-UI/core-sdk/issues)
+- 📦 License: MIT

@@ -1,0 +1,217 @@
+---
+sidebar_position: 7
+---
+
+# Keyboard Shortcuts Reference
+
+Complete reference of all keyboard shortcuts available in Flowscape Core SDK.
+
+## Overview
+
+Keyboard shortcuts are provided through plugin system. To enable shortcuts, include the appropriate plugins when creating your engine.
+
+```ts
+import { 
+  CoreEngine,
+  NodeHotkeysPlugin,
+  CameraHotkeysPlugin,
+  RulerManagerPlugin,
+  SelectionPlugin 
+} from '@flowscape-ui/core-sdk';
+
+const engine = new CoreEngine({
+  container,
+  plugins: [
+    new NodeHotkeysPlugin(),
+    new CameraHotkeysPlugin(),
+    new RulerManagerPlugin(),
+    new SelectionPlugin(),
+  ],
+});
+```
+
+## Node Operations
+
+Provided by `NodeHotkeysPlugin`.
+
+### Clipboard
+
+| Shortcut | Action | Description |
+|----------|--------|-------------|
+| `Ctrl+C` | Copy | Copy selected nodes to clipboard |
+| `Ctrl+X` | Cut | Cut selected nodes to clipboard |
+| `Ctrl+V` | Paste | Paste nodes from clipboard |
+
+### Node Management
+
+| Shortcut | Action | Description |
+|----------|--------|-------------|
+| `Delete` | Delete | Delete selected nodes |
+| `Backspace` | Delete | Delete selected nodes (alternative) |
+| `Ctrl+]` | Move Up | Increase z-index (bring forward) |
+| `Ctrl+[` | Move Down | Decrease z-index (send backward) |
+
+## Grouping
+
+Provided by `SelectionPlugin`.
+
+| Shortcut | Action | Description |
+|----------|--------|-------------|
+| `Ctrl+G` | Group | Group selected nodes together |
+| `Ctrl+Shift+G` | Ungroup | Ungroup selected group |
+| `Shift+Click` | Multi-select | Add/remove node to/from selection |
+| `Shift` (during resize) | Lock Aspect | Maintain aspect ratio while resizing |
+
+## Camera Controls
+
+Provided by `CameraHotkeysPlugin`.
+
+### Zoom
+
+| Shortcut | Action | Description |
+|----------|--------|-------------|
+| `Ctrl+Wheel` | Zoom | Zoom in/out at cursor position |
+| `+` / `=` | Zoom In | Increase zoom level |
+| `-` | Zoom Out | Decrease zoom level |
+
+### Pan
+
+| Shortcut | Action | Description |
+|----------|--------|-------------|
+| `Arrow Keys` | Pan | Pan camera in direction |
+| `Space+Drag` | Pan | Pan camera with mouse |
+| `Middle Mouse+Drag` | Pan | Pan camera with middle button |
+| `Right Mouse+Drag` | Pan | Pan camera with right button |
+
+## Ruler Controls
+
+Provided by `RulerManagerPlugin`.
+
+| Shortcut | Action | Description |
+|----------|--------|-------------|
+| `Shift+R` | Toggle Rulers | Show/hide ruler system |
+| `Delete` (on guide) | Delete Guide | Remove selected guide line |
+| `Backspace` (on guide) | Delete Guide | Remove selected guide line |
+| `Drag from ruler` | Create Guide | Create new guide line |
+
+## Quick Reference Table
+
+All shortcuts in one table:
+
+| Category | Shortcut | Action |
+|----------|----------|--------|
+| **Clipboard** | `Ctrl+C` | Copy nodes |
+| | `Ctrl+X` | Cut nodes |
+| | `Ctrl+V` | Paste nodes |
+| **Node Management** | `Delete` / `Backspace` | Delete nodes |
+| | `Ctrl+]` | Move node forward |
+| | `Ctrl+[` | Move node backward |
+| **Grouping** | `Ctrl+G` | Group nodes |
+| | `Ctrl+Shift+G` | Ungroup nodes |
+| | `Shift+Click` | Multi-select |
+| | `Shift` (resize) | Lock aspect ratio |
+| **Camera Zoom** | `Ctrl+Wheel` | Zoom at cursor |
+| | `+` / `=` | Zoom in |
+| | `-` | Zoom out |
+| **Camera Pan** | `Arrow Keys` | Pan direction |
+| | `Space+Drag` | Pan with mouse |
+| | `Middle Mouse+Drag` | Pan with middle button |
+| | `Right Mouse+Drag` | Pan with right button |
+| **Rulers** | `Shift+R` | Toggle rulers |
+| | `Delete` (guide) | Delete guide |
+| | `Drag from ruler` | Create guide |
+
+## Platform Differences
+
+### macOS
+
+On macOS, `Ctrl` is typically replaced with `Cmd` (⌘):
+
+| Windows/Linux | macOS | Action |
+|---------------|-------|--------|
+| `Ctrl+C` | `Cmd+C` | Copy |
+| `Ctrl+V` | `Cmd+V` | Paste |
+| `Ctrl+X` | `Cmd+X` | Cut |
+| `Ctrl+G` | `Cmd+G` | Group |
+| `Ctrl+]` | `Cmd+]` | Move forward |
+| `Ctrl+[` | `Cmd+[` | Move backward |
+
+## Customization
+
+To customize shortcuts, create your own plugin:
+
+```ts
+import { Plugin, CoreEngine } from '@flowscape-ui/core-sdk';
+
+class CustomHotkeysPlugin extends Plugin {
+  protected onAttach(core: CoreEngine): void {
+    window.addEventListener('keydown', (e) => {
+      // Custom shortcut: Ctrl+D to duplicate
+      if (e.ctrlKey && e.key === 'd') {
+        e.preventDefault();
+        // Your duplication logic
+      }
+      
+      // Custom shortcut: Ctrl+A to select all
+      if (e.ctrlKey && e.key === 'a') {
+        e.preventDefault();
+        // Your select all logic
+      }
+    });
+  }
+  
+  protected onDetach(core: CoreEngine): void {
+    // Cleanup event listeners
+  }
+}
+```
+
+## Best Practices
+
+1. **Show shortcuts in UI** - Display available shortcuts in tooltips or help menu
+2. **Provide visual feedback** - Show when a shortcut is triggered
+3. **Handle conflicts** - Be aware of browser shortcuts (e.g., Ctrl+S)
+4. **Test on all platforms** - Verify shortcuts work on Windows, macOS, and Linux
+5. **Document custom shortcuts** - If you add custom shortcuts, document them clearly
+
+## Disabling Shortcuts
+
+To disable specific shortcuts, don't include the corresponding plugin:
+
+```ts
+// No keyboard shortcuts
+const engine = new CoreEngine({
+  container,
+  plugins: [
+    new GridPlugin(),
+    new SelectionPlugin(),
+    // No NodeHotkeysPlugin or CameraHotkeysPlugin
+  ],
+});
+```
+
+Or create a custom plugin that prevents default behavior:
+
+```ts
+class DisableShortcutsPlugin extends Plugin {
+  protected onAttach(core: CoreEngine): void {
+    window.addEventListener('keydown', (e) => {
+      // Disable Ctrl+C/V/X
+      if (e.ctrlKey && ['c', 'v', 'x'].includes(e.key)) {
+        e.stopPropagation();
+      }
+    }, { capture: true });
+  }
+  
+  protected onDetach(core: CoreEngine): void {
+    // Cleanup
+  }
+}
+```
+
+## See Also
+
+- [NodeHotkeysPlugin](../plugins/hotkeys-plugins) - Node operation shortcuts
+- [CameraHotkeysPlugin](../plugins/hotkeys-plugins) - Camera control shortcuts
+- [SelectionPlugin](../plugins/selection-plugin) - Selection and grouping shortcuts
+- [RulerManagerPlugin](../plugins/ruler-plugin) - Ruler shortcuts

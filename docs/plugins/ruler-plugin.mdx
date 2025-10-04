@@ -4,14 +4,246 @@ sidebar_position: 4
 
 # Ruler Plugin
 
-Adds rulers and guides to assist alignment.
+Adds rulers, guides, and measurement tools to assist with precise alignment and positioning.
 
-## Usage
+## Overview
+
+The ruler system consists of four complementary plugins:
+- **RulerPlugin** - Main ruler display on canvas edges
+- **RulerGuidesPlugin** - Draggable guide lines from rulers
+- **RulerHighlightPlugin** - Highlights ruler position on hover
+- **RulerManagerPlugin** - Manages ruler visibility and guide deletion
+
+## Basic Usage
+
+### Simple Setup
 
 ```ts
 import { RulerPlugin } from '@flowscape-ui/core-sdk';
 
-const engine = new CoreEngine({ container, plugins: [new RulerPlugin()] });
+const engine = new CoreEngine({ 
+  container, 
+  plugins: [new RulerPlugin()] 
+});
 ```
 
-For performance tips, see `RULER_OPTIMIZATION.md` in the repository.
+### Complete Ruler System
+
+For full functionality, use all four plugins together:
+
+```ts
+import { 
+  RulerPlugin,
+  RulerGuidesPlugin,
+  RulerHighlightPlugin,
+  RulerManagerPlugin 
+} from '@flowscape-ui/core-sdk';
+
+const engine = new CoreEngine({
+  container,
+  plugins: [
+    new RulerPlugin(),
+    new RulerGuidesPlugin({ snapToGrid: true, gridStep: 1 }),
+    new RulerHighlightPlugin({ 
+      highlightColor: '#2b83ff', 
+      highlightOpacity: 0.3 
+    }),
+    new RulerManagerPlugin({ enabled: true }),
+  ],
+});
+```
+
+## RulerPlugin
+
+Displays horizontal and vertical rulers along the canvas edges.
+
+### Configuration
+
+```ts
+const rulerPlugin = new RulerPlugin({
+  enabled: true,           // Show/hide rulers
+  backgroundColor: '#1e293b', // Ruler background color
+  textColor: '#94a3b8',    // Measurement text color
+  lineColor: '#475569',    // Tick mark color
+});
+```
+
+## RulerGuidesPlugin
+
+Enables draggable guide lines from the rulers.
+
+### Creating Guides
+
+1. **Drag from ruler** - Click and drag from a ruler to create a guide
+2. **Snap to grid** - Guides can snap to grid if enabled
+
+### Configuration
+
+```ts
+const guidesPlugin = new RulerGuidesPlugin({
+  snapToGrid: true,    // Enable grid snapping
+  gridStep: 1,         // Grid step size for snapping
+  guideColor: '#3b82f6', // Guide line color
+  guideWidth: 1,       // Guide line width
+});
+```
+
+### Programmatic Guide Creation
+
+```ts
+// Create a vertical guide at x=200
+engine.guides.addVertical(200);
+
+// Create a horizontal guide at y=150
+engine.guides.addHorizontal(150);
+
+// Remove all guides
+engine.guides.clear();
+```
+
+## RulerHighlightPlugin
+
+Highlights the ruler position when hovering over the canvas.
+
+### Configuration
+
+```ts
+const highlightPlugin = new RulerHighlightPlugin({
+  highlightColor: '#2b83ff',  // Highlight color
+  highlightOpacity: 0.3,      // Highlight opacity (0-1)
+  highlightWidth: 2,          // Highlight line width
+});
+```
+
+## RulerManagerPlugin
+
+Manages ruler visibility and provides keyboard shortcuts.
+
+### Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| `Shift+R` | Toggle rulers visibility |
+| `Delete` / `Backspace` | Delete active guide (when guide is selected) |
+
+### Configuration
+
+```ts
+const managerPlugin = new RulerManagerPlugin({
+  enabled: true,  // Rulers visible by default
+});
+```
+
+### Programmatic Control
+
+```ts
+// Toggle rulers
+engine.rulers.toggle();
+
+// Show rulers
+engine.rulers.show();
+
+// Hide rulers
+engine.rulers.hide();
+
+// Check if visible
+const isVisible = engine.rulers.isVisible();
+```
+
+## Complete Example
+
+```ts
+import { 
+  CoreEngine,
+  GridPlugin,
+  RulerPlugin,
+  RulerGuidesPlugin,
+  RulerHighlightPlugin,
+  RulerManagerPlugin 
+} from '@flowscape-ui/core-sdk';
+
+const engine = new CoreEngine({
+  container: document.getElementById('canvas')!,
+  width: 1200,
+  height: 800,
+  backgroundColor: '#111827',
+  plugins: [
+    // Grid for snapping
+    new GridPlugin({ 
+      enabled: true,
+      color: '#3d3d3d',
+      minScaleToShow: 15,
+      enableSnap: true 
+    }),
+    
+    // Ruler system
+    new RulerPlugin(),
+    new RulerGuidesPlugin({ 
+      snapToGrid: true, 
+      gridStep: 1 
+    }),
+    new RulerHighlightPlugin({ 
+      highlightColor: '#2b83ff', 
+      highlightOpacity: 0.3 
+    }),
+    new RulerManagerPlugin({ enabled: true }),
+  ],
+});
+
+// Create some content
+const rect = engine.nodes.addShape({
+  x: 100,
+  y: 100,
+  width: 200,
+  height: 150,
+  fill: '#3b82f6',
+});
+
+// Now you can:
+// - Press Shift+R to toggle rulers
+// - Drag from rulers to create guides
+// - Guides will snap to grid
+// - Hover over canvas to see position highlight
+// - Select and delete guides with Delete key
+```
+
+## Use Cases
+
+### Precise Alignment
+
+Use guides to align multiple objects:
+
+```ts
+// Create a vertical guide at x=300
+engine.guides.addVertical(300);
+
+// Create shapes aligned to the guide
+const rect1 = engine.nodes.addShape({ x: 300, y: 100, width: 100, height: 50 });
+const rect2 = engine.nodes.addShape({ x: 300, y: 200, width: 100, height: 50 });
+```
+
+### Layout Grids
+
+Create a grid of guides for layout:
+
+```ts
+// Vertical guides every 100px
+for (let x = 0; x <= 1000; x += 100) {
+  engine.guides.addVertical(x);
+}
+
+// Horizontal guides every 100px
+for (let y = 0; y <= 800; y += 100) {
+  engine.guides.addHorizontal(y);
+}
+```
+
+## Performance Tips
+
+For optimal performance with rulers:
+
+1. **Limit guide count** - Too many guides can impact performance
+2. **Use grid snapping** - Helps with precise positioning without excessive guides
+3. **Toggle visibility** - Hide rulers when not needed (Shift+R)
+
+For more performance tips, see `RULER_OPTIMIZATION.md` in the repository.

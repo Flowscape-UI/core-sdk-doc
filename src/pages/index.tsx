@@ -12,6 +12,11 @@ function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
   return (
     <header className={clsx("hero hero--primary", styles.heroBanner)}>
+      {/* Animated Background */}
+      <div className={styles.animatedBackground}>
+        <div className={styles.backgroundOverlay}></div>
+      </div>
+
       <div className="container">
         <Heading as="h1" className="hero__title">
           {siteConfig.title}
@@ -37,8 +42,8 @@ export default function Home(): ReactNode {
   const { siteConfig } = useDocusaurusContext();
   return (
     <Layout
-      title={`Hello from ${siteConfig.title}`}
-      description="Description will go into a meta tag in <head />"
+      title={`${siteConfig.title} - TypeScript 2D Canvas Engine`}
+      description="Framework-agnostic 2D canvas engine built with TypeScript. Create interactive canvas applications with a powerful plugin system and modern API."
     >
       <HomepageHeader />
       <main>

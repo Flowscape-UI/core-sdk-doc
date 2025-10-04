@@ -4,24 +4,328 @@ sidebar_position: 2
 
 # CameraManager
 
-`CameraManager` handles panning and zooming over the `world` group.
+`CameraManager` handles panning and zooming over the `world` group, providing smooth camera controls for navigating your canvas.
+
+## Overview
+
+The Camera Manager provides:
+
+- **Zoom controls** - Programmatic and interactive zooming
+- **Pan controls** - Move the viewport around the canvas
+- **Reset functionality** - Return to default view
+- **Center on objects** - Focus on specific nodes
+- **Smooth animations** - Animated camera movements
 
 ## Basic Usage
 
 ```ts
+// Access camera through engine instance
+const camera = engine.camera;
+
 // Zoom in/out
-engine.camera.zoomTo(1.5, { x: 400, y: 300 });
+camera.zoomIn();
+camera.zoomOut();
 
-// Set absolute scale
-engine.camera.setScale(2);
+// Set specific zoom level
+camera.setZoom(1.5);
 
-// Pan to position
+// Pan by offset
+camera.pan(100, 50); // dx, dy
+
+// Reset to default view
+camera.reset();
+```
+
+## Zoom Methods
+
+### zoomIn()
+
+Zoom in by a fixed increment:
+
+```ts
+engine.camera.zoomIn();
+// Increases scale by ~20%
+```
+
+### zoomOut()
+
+Zoom out by a fixed increment:
+
+```ts
+engine.camera.zoomOut();
+// Decreases scale by ~20%
+```
+
+### setZoom(scale)
+
+Set absolute zoom level:
+
+```ts
+// Zoom to 150%
+engine.camera.setZoom(1.5);
+
+// Zoom to 50%
+engine.camera.setZoom(0.5);
+
+// Reset to 100%
+engine.camera.setZoom(1);
+```
+
+### zoomTo(scale, point)
+
+Zoom to a specific scale at a point:
+
+```ts
+// Zoom to 2x at canvas center
+engine.camera.zoomTo(2, { x: 400, y: 300 });
+
+// Zoom to 1.5x at mouse position
+engine.camera.zoomTo(1.5, { x: mouseX, y: mouseY });
+```
+
+## Pan Methods
+
+### pan(dx, dy)
+
+Pan camera by offset:
+
+```ts
+// Pan right 100px, down 50px
+engine.camera.pan(100, 50);
+
+// Pan left 50px, up 30px
+engine.camera.pan(-50, -30);
+```
+
+### panTo(position)
+
+Pan to absolute position:
+
+```ts
+// Pan to specific coordinates
 engine.camera.panTo({ x: 100, y: 200 });
+```
 
-// Fit content (if implemented) or reset view
+## Navigation Methods
+
+### reset()
+
+Reset camera to default view:
+
+```ts
+// Reset zoom and position
 engine.camera.reset();
+```
+
+### centerOn(node)
+
+Center camera on a specific node:
+
+```ts
+const rect = engine.nodes.addShape({
+  x: 500,
+  y: 500,
+  width: 100,
+  height: 100,
+});
+
+// Center camera on the rectangle
+engine.camera.centerOn(rect);
+```
+
+### fitToScreen()
+
+Fit all content in viewport (if implemented):
+
+```ts
+// Zoom and pan to show all nodes
+engine.camera.fitToScreen();
 ```
 
 ## Configuration
 
-When creating `CoreEngine`, you can set `minScale`, `maxScale`, and `draggable`.
+Configure camera limits when creating the engine:
+
+```ts
+const engine = new CoreEngine({
+  container,
+  minScale: 0.1, // Minimum zoom (10%)
+  maxScale: 5, // Maximum zoom (500%)
+  draggable: true, // Enable pan with mouse
+});
+```
+
+### Options
+
+| Option      | Type      | Default | Description          |
+| ----------- | --------- | ------- | -------------------- |
+| `minScale`  | `number`  | `0.1`   | Minimum zoom level   |
+| `maxScale`  | `number`  | `5`     | Maximum zoom level   |
+| `draggable` | `boolean` | `true`  | Enable mouse panning |
+
+## Interactive Controls
+
+### With CameraHotkeysPlugin
+
+Combine with `CameraHotkeysPlugin` for keyboard controls:
+
+```ts
+import { CameraHotkeysPlugin } from "@flowscape-ui/core-sdk";
+
+const engine = new CoreEngine({
+  container,
+  plugins: [new CameraHotkeysPlugin()],
+});
+
+// Now users can:
+// - Ctrl+Wheel to zoom
+// - +/- keys to zoom in/out
+// - Arrow keys to pan
+// - Middle mouse drag to pan
+```
+
+### Mouse Wheel Zoom
+
+Zoom at cursor position with mouse wheel:
+
+```ts
+stage.on("wheel", (e) => {
+  e.evt.preventDefault();
+
+  const pointer = stage.getPointerPosition();
+  const delta = e.evt.deltaY > 0 ? 0.9 : 1.1;
+
+  engine.camera.zoomTo(stage.scaleX() * delta, pointer);
+});
+```
+
+## Programmatic Navigation
+
+### Smooth Zoom Animation
+
+```ts
+// Animate zoom over time
+const targetScale = 2;
+const duration = 300; // ms
+
+const startScale = engine.stage.scaleX();
+const startTime = Date.now();
+
+const animate = () => {
+  const elapsed = Date.now() - startTime;
+  const progress = Math.min(elapsed / duration, 1);
+
+  const currentScale = startScale + (targetScale - startScale) * progress;
+  engine.camera.setZoom(currentScale);
+
+  if (progress < 1) {
+    requestAnimationFrame(animate);
+  }
+};
+
+animate();
+```
+
+### Pan to Node with Animation
+
+```ts
+const rect = engine.nodes.addShape({ x: 500, y: 500, width: 100, height: 100 });
+
+// Get node center
+const nodeCenter = {
+  x: rect.getNode().x() + rect.getNode().width() / 2,
+  y: rect.getNode().y() + rect.getNode().height() / 2,
+};
+
+// Calculate viewport center
+const viewportCenter = {
+  x: engine.stage.width() / 2,
+  y: engine.stage.height() / 2,
+};
+
+// Pan to center node in viewport
+const offset = {
+  x: viewportCenter.x - nodeCenter.x,
+  y: viewportCenter.y - nodeCenter.y,
+};
+
+engine.camera.pan(offset.x, offset.y);
+```
+
+## Events
+
+Listen to camera events:
+
+```ts
+engine.eventBus.on("camera:zoom", ({ scale }) => {
+  console.log("Zoom changed:", scale);
+});
+
+engine.eventBus.on("camera:pan", ({ x, y }) => {
+  console.log("Pan changed:", x, y);
+});
+
+engine.eventBus.on("camera:reset", () => {
+  console.log("Camera reset");
+});
+```
+
+## Complete Example
+
+```ts
+import { CoreEngine, CameraHotkeysPlugin } from "@flowscape-ui/core-sdk";
+
+const engine = new CoreEngine({
+  container: document.getElementById("canvas")!,
+  width: 1200,
+  height: 800,
+  minScale: 0.1,
+  maxScale: 5,
+  plugins: [new CameraHotkeysPlugin()],
+});
+
+// Create content
+const rect = engine.nodes.addShape({
+  x: 600,
+  y: 400,
+  width: 200,
+  height: 150,
+  fill: "#3b82f6",
+});
+
+// Camera controls
+document.getElementById("zoom-in")?.addEventListener("click", () => {
+  engine.camera.zoomIn();
+});
+
+document.getElementById("zoom-out")?.addEventListener("click", () => {
+  engine.camera.zoomOut();
+});
+
+document.getElementById("reset")?.addEventListener("click", () => {
+  engine.camera.reset();
+});
+
+document.getElementById("center")?.addEventListener("click", () => {
+  engine.camera.centerOn(rect);
+});
+
+// Listen to camera changes
+engine.eventBus.on("camera:zoom", ({ scale }) => {
+  document.getElementById("zoom-level")!.textContent =
+    `${Math.round(scale * 100)}%`;
+});
+```
+
+## Best Practices
+
+1. **Limit zoom range** - Set reasonable `minScale` and `maxScale` values
+2. **Smooth animations** - Use easing for better UX
+3. **Preserve aspect ratio** - Keep consistent scaling on both axes
+4. **Handle edge cases** - Prevent zooming too far in/out
+5. **Provide visual feedback** - Show current zoom level to users
+
+## See Also
+
+- [CameraHotkeysPlugin](../plugins/hotkeys-plugins) - Keyboard shortcuts for camera
+- [Interactive Demo](../guides/interactive-demo) - See camera controls in action

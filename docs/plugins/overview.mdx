@@ -4,41 +4,247 @@ sidebar_position: 1
 
 # Plugins Overview
 
-Plugins extend the engine with optional features. A plugin is a class that extends `Plugin` and implements `onAttach` and `onDetach`.
+Plugins extend the engine with optional features. A plugin is a class that extends `Plugin` and implements `onAttach` and `onDetach` lifecycle methods.
+
+## Philosophy
+
+The plugin system allows you to:
+
+- **Extend functionality** without modifying the core engine
+- **Compose features** by combining multiple plugins
+- **Keep bundle size small** by only including what you need
+- **Create custom plugins** for your specific use cases
 
 ## Using Plugins
 
 ```ts
-import { GridPlugin, SelectionPlugin, Plugins } from '@flowscape-ui/core-sdk';
+import {
+  CoreEngine,
+  GridPlugin,
+  SelectionPlugin,
+  NodeHotkeysPlugin,
+} from "@flowscape-ui/core-sdk";
 
 const engine = new CoreEngine({
   container,
   plugins: [
-    new GridPlugin(),
-    new SelectionPlugin(),
+    new GridPlugin({ enabled: true }),
+    new SelectionPlugin({ dragEnabled: true }),
+    new NodeHotkeysPlugin(),
   ],
 });
 ```
 
 ## Built-in Plugins
 
-- Grid
-- Selection / Area Selection
-- Rulers, Guides, Highlight
-- Hotkeys (camera, nodes)
-- Logo
+Flowscape SDK provides a comprehensive set of ready-to-use plugins:
 
-## Writing a Plugin
+| Plugin                   | Description                                                                   |
+| ------------------------ | ----------------------------------------------------------------------------- |
+| **GridPlugin**           | Adaptive grid with automatic scaling and snap-to-grid functionality           |
+| **SelectionPlugin**      | Selection, transformation, drag & drop, and grouping support                  |
+| **AreaSelectionPlugin**  | Area selection with frame (Shift+Drag to select multiple nodes)               |
+| **NodeHotkeysPlugin**    | Copy/paste/cut nodes, delete, z-index management (Ctrl+C/V/X, Delete, Ctrl+]) |
+| **CameraHotkeysPlugin**  | Zoom and pan controls with keyboard (Ctrl+Wheel, Arrow keys)                  |
+| **RulerPlugin**          | Rulers with measurement units displayed on canvas edges                       |
+| **RulerGuidesPlugin**    | Draggable guide lines from rulers with grid snapping                          |
+| **RulerHighlightPlugin** | Ruler highlighting on hover to show current position                          |
+| **RulerManagerPlugin**   | Toggle rulers visibility and manage guides (Shift+R, Delete)                  |
+| **LogoPlugin**           | Watermark/logo overlay on canvas                                              |
+
+## Plugin Categories
+
+### Layout & Alignment
+
+- **GridPlugin** - Visual grid and snapping
+- **RulerPlugin** - Measurement rulers
+- **RulerGuidesPlugin** - Alignment guides
+- **RulerHighlightPlugin** - Position feedback
+
+### Interaction
+
+- **SelectionPlugin** - Node selection and transformation
+- **AreaSelectionPlugin** - Multi-node selection
+- **NodeHotkeysPlugin** - Keyboard shortcuts for nodes
+- **CameraHotkeysPlugin** - Keyboard shortcuts for camera
+
+### Utilities
+
+- **LogoPlugin** - Branding and watermarks
+- **RulerManagerPlugin** - Ruler system management
+
+## Common Plugin Combinations
+
+### Basic Setup
+
+Minimal setup for interactive canvas:
 
 ```ts
-import { Plugin } from '@flowscape-ui/core-sdk';
+const engine = new CoreEngine({
+  container,
+  plugins: [new GridPlugin(), new SelectionPlugin(), new NodeHotkeysPlugin()],
+});
+```
 
-class MyPlugin extends Plugin {
-  protected onAttach(core) {
-    // subscribe, draw, etc.
-  }
-  protected onDetach(core) {
-    // cleanup
-  }
+### Full-Featured Editor
+
+Complete setup with all features:
+
+```ts
+const engine = new CoreEngine({
+  container,
+  plugins: [
+    // Layout
+    new GridPlugin({ enabled: true, enableSnap: true }),
+    new RulerPlugin(),
+    new RulerGuidesPlugin({ snapToGrid: true }),
+    new RulerHighlightPlugin(),
+    new RulerManagerPlugin(),
+
+    // Interaction
+    new SelectionPlugin({ dragEnabled: true }),
+    new AreaSelectionPlugin(),
+    new NodeHotkeysPlugin(),
+    new CameraHotkeysPlugin(),
+
+    // Branding
+    new LogoPlugin({ src: "/logo.svg", opacity: 0.5 }),
+  ],
+});
+```
+
+### Viewer Mode
+
+Read-only canvas without editing features:
+
+```ts
+const engine = new CoreEngine({
+  container,
+  plugins: [
+    new GridPlugin({ enabled: true }),
+    new CameraHotkeysPlugin(), // Only camera controls
+    new LogoPlugin({ src: "/logo.svg" }),
+  ],
+});
+```
+
+## Plugin Lifecycle
+
+Every plugin has two lifecycle methods:
+
+### onAttach
+
+Called when the plugin is attached to the engine:
+
+```ts
+protected onAttach(core: CoreEngine): void {
+  // Initialize plugin
+  // Subscribe to events
+  // Add UI elements
+  // Setup state
 }
 ```
+
+### onDetach
+
+Called when the plugin is detached from the engine:
+
+```ts
+protected onDetach(core: CoreEngine): void {
+  // Cleanup resources
+  // Unsubscribe from events
+  // Remove UI elements
+  // Clear state
+}
+```
+
+## Writing a Custom Plugin
+
+Create your own plugin by extending the `Plugin` class:
+
+```ts
+import { Plugin, CoreEngine } from "@flowscape-ui/core-sdk";
+
+class MyCustomPlugin extends Plugin {
+  private handler: ((node: any) => void) | null = null;
+
+  protected onAttach(core: CoreEngine): void {
+    // Subscribe to events
+    this.handler = (node) => {
+      console.log("Node created:", node);
+    };
+    core.eventBus.on("node:created", this.handler);
+
+    // Add custom UI
+    const customLayer = new Konva.Layer();
+    core.stage.add(customLayer);
+  }
+
+  protected onDetach(core: CoreEngine): void {
+    // Cleanup
+    if (this.handler) {
+      core.eventBus.off("node:created", this.handler);
+      this.handler = null;
+    }
+  }
+}
+
+// Usage
+const engine = new CoreEngine({
+  container,
+  plugins: [new MyCustomPlugin()],
+});
+```
+
+## Dynamic Plugin Management
+
+Plugins can be added or removed at runtime:
+
+```ts
+const gridPlugin = new GridPlugin();
+
+// Add plugin after initialization
+engine.plugins.add(gridPlugin);
+
+// Remove plugin
+engine.plugins.remove(gridPlugin);
+
+// Check if plugin is attached
+const isAttached = engine.plugins.has(gridPlugin);
+```
+
+## Plugin Configuration
+
+Most plugins accept configuration options:
+
+```ts
+const gridPlugin = new GridPlugin({
+  enabled: true,
+  color: "#3d3d3d",
+  minScaleToShow: 15,
+  enableSnap: true,
+  snapDistance: 10,
+});
+
+const selectionPlugin = new SelectionPlugin({
+  dragEnabled: true,
+  rotateEnabled: true,
+  resizeEnabled: true,
+  borderStroke: "#2563eb",
+  borderStrokeWidth: 2,
+});
+```
+
+## Best Practices
+
+1. **Keep plugins focused** - Each plugin should do one thing well
+2. **Clean up resources** - Always unsubscribe and cleanup in `onDetach`
+3. **Use the event bus** - Communicate between plugins via events
+4. **Make plugins configurable** - Accept options in the constructor
+5. **Document your plugins** - Provide clear usage examples
+
+## Next Steps
+
+- Learn about specific plugins in their dedicated documentation pages
+- See [Creating Plugins](./creating-plugins) for an in-depth guide
+- Check out the [Interactive Demo](../guides/interactive-demo) to see plugins in action
