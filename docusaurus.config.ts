@@ -18,12 +18,14 @@ const config: Config = {
   url: "https://flowscape-ui.github.io",
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: "/",
+  baseUrl: "/core-sdk-docs/",
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: "Flowscape-UI", // GitHub org
   projectName: "core-sdk-docs", // This docs project name (adjust if different)
+  deploymentBranch: "gh-pages",
+  trailingSlash: false,
 
   onBrokenLinks: "throw",
 
