@@ -19,12 +19,12 @@ const config: Config = {
   url: "https://flowscape-ui.github.io",
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: "/core-sdk-docs/",
+  baseUrl: "/core-sdk-doc/",
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: "Flowscape-UI", // GitHub org
-  projectName: "core-sdk-docs", // This docs project name (adjust if different)
+  projectName: "core-sdk-doc", // This docs project name (adjust if different)
   deploymentBranch: "gh-pages",
   trailingSlash: false,
 
@@ -66,7 +66,7 @@ const config: Config = {
           sidebarPath: "./sidebars.ts",
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl: "https://github.com/Flowscape-UI/core-sdk-docs/tree/main/",
+          editUrl: "https://github.com/Flowscape-UI/core-sdk-doc/tree/main/",
         },
         blog: {
           showReadingTime: true,
