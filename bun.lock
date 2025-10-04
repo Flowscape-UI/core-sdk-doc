@@ -9,6 +9,7 @@
         "@flowscape-ui/core-sdk": "^1.0.1",
         "@mdx-js/react": "^3.0.0",
         "clsx": "^2.0.0",
+        "p-map": "^4.0.0",
         "prism-react-renderer": "^2.3.0",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
