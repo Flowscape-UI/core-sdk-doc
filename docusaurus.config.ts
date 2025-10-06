@@ -105,6 +105,11 @@ const config: Config = {
       },
       items: [
         {
+          href: "https://buymeacoffee.com/flowscape",
+          label: "☕ Buy Me a Coffee",
+          position: "right",
+        },
+        {
           href: "https://github.com/Flowscape-UI/core-sdk",
           label: "GitHub",
           position: "right",

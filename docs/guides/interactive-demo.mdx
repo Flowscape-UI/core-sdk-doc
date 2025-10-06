@@ -1,5 +1,6 @@
 ---
 sidebar_position: 6
+hide_table_of_contents: true
 ---
 
 # Interactive Demo
@@ -8,12 +9,14 @@ Try the SDK live below. You can drag shapes and see events in your browser conso
 
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-<BrowserOnly fallback={<div>Loading interactive demo…</div>}>
-  {() => {
-    const LiveCanvas = require("@site/src/components/LiveCanvas").default;
-    return <LiveCanvas />;
-  }}
-</BrowserOnly>
+<div className="interactive-demo-container">
+  <BrowserOnly fallback={<div>Loading interactive demo…</div>}>
+    {() => {
+      const LiveCanvas = require("@site/src/components/LiveCanvas").default;
+      return <LiveCanvas />;
+    }}
+  </BrowserOnly>
+</div>
 
 ## Code Snippet
 
